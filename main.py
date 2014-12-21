@@ -1,8 +1,12 @@
+from sys import exit
 # Token can be found at https://pinboard.in/settings/password
-from settings import _PINBOARD_TOKEN
+try:
+    from settings import _PINBOARD_TOKEN
+except ImportError:
+    print "Settings file not found. Please create settings.py based on settings.py.example"
+    exit(1)
 from lib import PinboardDownloader
 import argparse
-from sys import exit
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
