@@ -1,0 +1,533 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Python-Pinboard</title>
+	<style type="text/css">
+		html {
+			background: #FFF;
+			font: small "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
+			padding: 20px;
+			text-align: left;
+		}
+		h1 img {
+			border: 1px solid #CCC;
+			padding: 5px;
+			margin: 0 auto 5px;
+			display: block;
+		}
+		h1 {
+			text-align: center;
+			font-size: small;
+		}
+		p.download {
+			font-size: medium;
+			border: 1px solid #9F9;
+			background: #CFC;
+			padding: 10px;
+		}
+		pre {
+			font-size: larger;
+		}
+	</style>
+
+</head>
+<body>
+	<p>Python-Pinboard is an open source <a href="http://www.python.org/">Python</a> module to access the contents of a <a href="http://pinboard.in">Pinboard</a> account via the <a href="http://pinboard.in/howto/#api">Pinboard <abbr title="Application Programming Interface" class="capitals">API</abbr></a> (which is based on the <a href="http://del.icio.us/api">del.icio.us API</a>).</p>
+	<h2>Sections on This Page</h2>
+	<ol>
+		<li><a href="#example">Example Usage</a></li>
+		<li><a href="#documentation">Documentation</a></li>
+	</ol>
+	<div id="example">
+		<h2>Example Usage</h2>
+		<pre><code>>>> import pinboard
+>>> p = pinboard.open(<kbd>"username"</kbd>, <kbd>"password"</kbd>)
+>>> p
+<samp>{'headers': {'connection': 'close',
+             'content-encoding': 'gzip',
+             'content-length': '97',
+             'content-type': 'text/html',
+             'date': 'Thu, 23 Dec 2010 06:35:55 GMT',
+             'server': 'Apache/2.2.14 (Ubuntu)',
+             'vary': 'Accept-Encoding'},
+ 'lastupdate': u'2010-12-22T21:20:48Z',
+ 'lastupdate_parsed': time.struct_time(tm_year=2010, tm_mon=12, tm_mday=22, tm_hour=21, tm_min=20, tm_sec=48, tm_wday=2, tm_yday=356, tm_isdst=-1)}
+</samp>
+<!--
+>>> d["lastupdate"]
+<samp>u'2005-05-09T09:49:29Z'</samp>
+>>> d["lastupdate_parsed"]
+<samp>(2005, 5, 9, 9, 49, 29, 0, 129, -1)</samp>
+>>> d["headers"]
+<samp>{'transfer-encoding': 'chunked', 'vary': '*',
+	'server': 'Apache/1.3.33 (Debian GNU/Linux) 
+		mod_gzip/1.3.26.1a mod_perl/1.29 
+		AuthMySQL/4.3.9-2',
+	'connection': 'close', 
+	'date': 'Mon, 09 May 2005 12:14:22 GMT', 
+	'content-type': 'text/plain'}</samp>
+>>> d["tags"]
+<samp>[{u'count': 1, u'name': u'aggregation'},
+	{u'count': 2, u'name': u'ajax'},
+	{u'count': 1, u'name': u'america'},
+	{u'count': 1, u'name': u'api'},
+	{u'count': 10, u'name': u'apple'},
+	{u'count': 2, u'name': u'art'},
+	{u'count': 1, u'name': u'atom'},
+	{u'count': 1, u'name': u'blogging'},
+	{u'count': 1, u'name': u'cartoons'}]</samp>
+>>> d["tags"][:2]
+<samp>[{u'count': 1, u'name': u'aggregation'},
+	{u'count': 2, u'name': u'ajax'}]</samp>
+>>> d["dates"]
+<samp>[{u'count': 2, u'date': u'2005-05-08', 
+		u'date_parsed': (2005, 5, 8, 0, 0, 0, 6, 128, -1)},
+	{u'count': 8, u'date': u'2005-05-07', 
+		u'date_parsed': (2005, 5, 7, 0, 0, 0, 5, 127, -1)}, 
+	{u'count': 5, u'date': u'2005-05-06', 
+		u'date_parsed': (2005, 5, 6, 0, 0, 0, 4, 126, -1)},
+	{u'count': 8, u'date': u'2005-05-05', 
+		u'date_parsed': (2005, 5, 5, 0, 0, 0, 3, 125, -1)}, 
+	{u'count': 3, u'date': u'2005-05-04', 
+		u'date_parsed': (2005, 5, 4, 0, 0, 0, 2, 124, -1)}]</samp>
+>>> d["posts"][:2]
+<samp>[{u'extended': u'For when I get back home', 
+		u'hash': u'5fe05afcfc229db0d6cbcb1cbdda71cf', 
+		u'description': u'Bonjour for Windows', 
+		u'tags': [u'apple', u'windows'], 
+		u'time_parsed': (2005, 5, 8, 18, 16, 1, 6, 128, -1), 
+		u'href': u'http://www.apple.com/', 
+		u'time': u'2005-05-08T18:16:01Z'},
+	{u'hash': u'170322ad5668143742efef335a334da5',
+		u'description': u'Matthew Thomas', 
+		u'tags': [u'usability'], 
+		u'time_parsed': (2005, 5, 7, 13, 27, 46, 5, 127, -1), 
+		u'href': u'http://mpt.net.nz/', 
+		u'time': u'2005-05-07T13:27:46Z'}]</samp>
+>>> d.posts(<var>tag</var>=<kbd>"usability"</kbd>)
+<samp>[{u'hash': u'170322ad5668143742efef335a334da5', 
+		u'description': u'Matthew Thomas', 
+		u'tags': [u'usability'], 
+		u'time_parsed': (2005, 5, 7, 13, 27, 46, 5, 127, -1), 
+		u'href': u'http://mpt.net.nz/', 
+		u'time': u'2005-05-07T13:27:46Z'},
+	{u'extended': u'I bookmark this because Matthew Thomas 
+			(aka mpt) is working on it',
+		u'hash': u'eb1242cfeed2dd9d2e1250bde26ad749', 
+		u'description': u'The Launchpad Home Page', 
+		u'tags': [u'usability'], 
+		u'time_parsed': (2005, 5, 7, 13, 26, 45, 5, 127, -1), 
+		u'href': u'https://launchpad.ubuntu.com/', 
+		u'time': u'2005-05-07T13:26:45Z'}]</samp>
+>>> d.posts(<var>tag</var>=<kbd>"computing"</kbd>, <var>count</var>=<kbd>1</kbd>)
+<samp>[{u'hash': u'd78a1aa1a086dd475f83691febcc61ba',
+	u'description': u'CSS Cheat Sheet', 
+	u'tags': [u'reference', u'computing'], 
+	u'time_parsed': (2005, 5, 6, 9, 41, 33, 4, 126, -1), 
+	u'href': u'http://www.ilovejackdaniels.com/css/', 
+	u'time': u'2005-05-06T09:41:33Z'}]</samp>
+	-->
+>>> p.add(<kbd>'https://github.com/mgan59/python-pinboard/'</kbd>,
+	<kbd>"Python-Pinboard"</kbd>,
+	<kbd>"A Python module to access the contents of a 
+		Pinboard account via the Pinboard API."</kbd>, 
+		<kbd>("computing", "python")</kbd>)         
+>>> p.add(<kbd>'https://github.com/mgan59/python-pinboard'</kbd>,
+	<kbd>"Python-Pinboard"</kbd>, 
+	<var>tags</var>=<kbd>("computing", "python", "projects")</kbd>)
+>>> p.delete(<kbd>"https://github.com/mgan59/python-pinboard"</kbd>)</code></pre>
+	</div>
+	<div id="documentation">
+		<h2>Documentation</h2>
+		<!--
+		<p>Copyright &copy; 2010 Paul Mucur.</p>
+		<p>Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled "<a href="#license">GNU Free Documentation License</a>".</p>
+		-->
+		<ol>
+			<li><a href="#notes">Notes on Documentation</a></li>
+			<li>
+				<a href="#overview">Brief Overview</a>
+				<ol>
+					<li><a href="#what">What is Python-Pinboard?</a></li>
+				</ol>
+			</li>
+			<li>
+				<a href="#objects">Objects</a>
+				<ol>
+					<li><a href="#pinboardaccount">PinboardAccount</a></li>
+				</ol>
+			</li>
+			<li>
+				<a href="#attributes">Attributes</a>
+				<ol>
+					<li><a href="#bundles">Bundles</a></li>
+					<li><a href="#dates">Dates</a></li>
+					<li><a href="#headers">Headers</a></li>
+					<!-- <li><a href="#lastupdate">Last Update</a></li>
+					<li><a href="#posts">Posts</a></li>
+					<li><a href="#tags">Tags</a></li> -->
+				</ol>
+			</li>
+			<li>
+				<a href="#methods">Methods</a>
+				<ol>
+					<li><a href="#bundlesmethod">Bundles</a></li>
+					<li><a href="#datesmethod">Dates</a></li>
+					<li><a href="#postsmethod">Posts</a></li>
+					<li><a href="#tagsmethod">Tags</a></li>
+					<li><a href="#add">Add (and Edit) Posts</a></li>
+					<li><a href="#bundle">Bundle Tags</a></li>
+					<li><a href="#delete">Delete Posts</a></li>
+					<li><a href="#deletebundles">Delete Bundles</a></li>
+					<li><a href="#rename">Rename Tags</a></li>
+				</ol>
+			</li>
+			<!-- <li>
+				<a href="#license">GNU Free Documentation License</a>
+				<ol>
+					<li><a href="#preamble">0. <span class="capitals">PREAMBLE</span></a></li>
+					<li><a href="#applicability">1. <span class="capitals">APPLICABILITY AND DEFINITIONS</span></a></li>
+					<li><a href="#verbatim">2. <span class="capitals">VERBATIM COPYING</span></a></li>
+					<li><a href="#copying">3. <span class="capitals">COPYING IN QUANTITY</span></a></li>
+					<li><a href="#modifications">4. <span class="capitals">MODIFICATIONS</span></a></li>
+					<li><a href="#combining">5. <span class="capitals">COMBINING DOCUMENTS</span></a></li>
+					<li><a href="#collections">6. <span class="capitals">COLLECTIONS OF DOCUMENTS</span></a></li>
+					<li><a href="#aggregation">7. <span class="capitals">AGGREGATION WITH INDEPENDENT WORKS</span></a></li>
+					<li><a href="#translation">8. <span class="capitals">TRANSLATION</span></a></li>
+					<li><a href="#termination">9. <span class="capitals">TERMINATION</span></a></li>
+					<li><a href="#future">10. <span class="capitals">FUTURE REVISIONS OF THIS LICENSE</span></a></li>
+					<li><a href="#how">How to use this License for your documents</a></li>
+				</ol>
+			</li> -->
+		</ol>
+		<div id="notes">
+			<h3>Notes on Documentation</h3>
+			<!-- <p>Code examples are typeset in a <code>sans-serif font</code> with <code>normal code in black</code>, <kbd>user input in green</kbd>, <samp>sample output in blue</samp> and <var>arguments in purple</var>.</p> -->
+			<p>Attribute and method examples assume the existence of a <a href="#pinboardaccount">PinboardAccount</a> variable <code>p</code> which could have been created by the following code:</p>
+	<pre><code>import pinboard
+p = pinboard.open(<kbd>"username"</kbd>, <kbd>"password"</kbd>)</code></pre>
+		</div>
+		<div id="overview">
+			<h3>Brief Overview</h3>
+			<div id="what">
+				<h4>What is Python-Pinboard? Why this implementation?</h4>
+				<p>Python-Pinboard is a translation of Paul Mucur's Python module for accessing the del.icio.us API, <a href="https://github.com/mudge/python-delicious">Python-Delicious<a>, for use with <a href="http://pinboard.in">Pinboard</a>.</p>
+				<p>Python-Pinboard is an open source <a href="http://www.python.org/">Python</a> module to access the contents of a <a href="http://pinboard.in">Pinboard</a> account.</p>
+				<!--
+				<p>While there are existing modules to interact with del.icio.us such as <a href="http://delicious-py.berlios.de/">Delicious Python</a> and <a href="http://www.aypwip.org/cvs/index.pl/python/delicious/">python/delicious</a>, they didn't provide the abstraction of del.icio.us that I wanted (that of a <a href="http://diveintopython.org/native_data_types/index.html#odbchelper.dict">Python dictionary</a>).</p>
+				<p>Also, as I was just becoming a regular user of del.icio.us and having very little to do in an Easter holiday, I decided that writing this module would be a good way to teach myself Python.</p>
+				<p>As is evident, I was heavily inspired by <a href="http://www.diveintomark.org/">Mark Pilgrim</a>'s <a href="http://feedparser.org">Universal Feed Parser</a> so thanks go to him and all others who worked on it as well as Andrew Pearson who puts up with my constant e-mails.</p>
+				-->
+			</div>
+		</div>
+		<div id="objects">
+			<h3>Objects</h3>
+			<div id="PinboardAccount">
+				<h4>PinboardAccount</h4>
+				<p>This is the only object in the module and is the one that does all of the work. It represents a single Pinboard account and contains all of the attributes and methods defined in this documentation.</p>
+				<p>Two arguments <em class="capitals">MUST</em> be specified:</p>
+				<dl>
+					<dt><var>username</var></dt>
+					<dd>The username for the Pinboard account.</dd>
+					<dt><var>password</var></dt>
+					<dd>The password for the Pinboard account.</dd>
+				</dl>
+				<p>As well as the usual Python syntax for creating a new object, two methods, <code>open</code> and <code>connect</code>, can be used like so:</p>
+	<pre><code>import pinboard
+p = pinboard.PinboardAccount(<kbd>"username"</kbd>, <kbd>"password"</kbd>)
+p = pinboard.open(<kbd>"username"</kbd>, <kbd>"password"</kbd>)
+p = pinboard.connect(<kbd>"username"</kbd>, <kbd>"password"</kbd>)</code></pre>
+				<p>Otherwise, you can authenticate with a token by specifying only the following parameter:</p>
+				<dl>
+					<dt><var>token</var></dt>
+					<dd>API token; username and password will be ignored if the token is defined</dd>
+				</dl>
+	<pre><code>import pinboard
+p = pinboard.PinboardAccount(token=<kbd>"user:TOKEN")
+p = pinboard.open(token=<kbd>"user:TOKEN")
+p = pinboard.connect(token=<kbd>"user:TOKEN")</code></pre>
+			</div>
+		<div id="attributes">
+			<h3>Attributes</h3>
+			<p>As the module aims to represent a Pinboard account as a Python dictionary, data from your account is most easily accessed using the dictionary syntax of <code>object["key"]</code>.</p>
+			<p><strong>Important implementation note:</strong> In order to save repeatedly making requests to the Pinboard servers, most of the following attributes are only loaded upon request. By default, a <a href="#pinboardaccount">PinboardAccount object</a> only contains the <a href="#lastupdate">last update information</a> and the <a href="#headers">headers returned by the server</a>. When some data <em>is</em> loaded into an attribute, simply using the usual dictionary syntax will immediately return whatever has been stored without requesting any information from Pinboard at all: this means that if the <code>posts</code> method has been used to download only a selected few posts, simply calling <code>p["posts"]</code> (where <code>p</code> is your PinboardAccount object) will only return those selected posts: not every single one of your posts as you might have expected. To work around this, simply use the <code>posts</code> method rather than the attribute when necessary.</p>
+			<div id="bundles">
+				<h4>Bundles</h4>
+				<pre><code>p["bundles"]</code></pre>
+				<p>This attribute contains a <a href="http://docs.python.org/tutorial/datastructures.html#more-on-lists">list</a> of all of the bundles in your Pinboard account.</p>
+			</div>
+			<div id="dates">
+				<h4>Dates</h4>
+				<pre><code>p["dates"]</code></pre>
+				<p>This attribute contains a list of all of the dates on which you have made posts to Pinboard. Each element in this list is a dictionary of the following form:</p>
+				<pre><samp>{u'count': 2,
+u'date': u'2005-05-08',
+u'date_parsed': (2005, 5, 8, 0, 0, 0, 6, 128, -1)}</samp></pre>
+				<p>The anatomy of the above dictionary is as follows:</p>
+				<dl>
+					<dt><var>count</var></dt>
+					<dd>The number of posts made on that date.</dd>
+					<dt><var>date</var></dt>
+					<dd>The exact string representing that date returned by Pinboard.</dd>
+					<dt><var>date_parsed</var></dt>
+					<dd>The above date parsed into a <a href="http://docs.python.org/lib/module-time.html">Python time tuple of nine integers</a>.</dd>
+				</dl>
+			</div>
+			<div id="headers">
+				<h4>Headers</h4>
+				<p>This attribute is a dictionary of the headers returned by the Pinboard servers upon your last request and is of the following form:</p>
+				<pre><samp>{'connection': 'close',
+ 'content-encoding': 'gzip',
+ 'content-length': '97',
+ 'content-type': 'text/html',
+ 'date': 'Thu, 23 Dec 2010 06:35:55 GMT',
+ 'server': 'Apache/2.2.14 (Ubuntu)',
+ 'vary': 'Accept-Encoding'}
+</samp></pre>
+			</div>
+			<!--
+			<div id="lastupdate">
+				<h4>Last Update</h4>
+				<pre><code>p["lastupdate"]
+p["lastupdate_parsed"]</code></pre>
+				<p>These two attributes contain the time that modifications were last made to your Pinboard account. This is used internally by the module to determine when it is appropriate to redownload large amounts of content (such as all of your posts). The former attribute contains the exact string returned by the Pinboard servers such as <samp>u'2005-05-08T18:16:03Z'</samp> whereas the latter returns a Python time tuple of nine integers such as <samp>(2005, 5, 8, 18, 16, 3, 6, 128, -1)</samp>.</p>
+			</div>
+			<div id="posts">
+				<h4>Posts</h4>
+				<pre><code>p["posts"]</code></pre>
+				<p><strong>Use sparingly!</strong> This attribute contains a list of every single post in your Pinboard account and therefore places a relatively large load on the Pinboard servers and should be made only when necessary. Where possible, use the more refined <a href="#postsmethod"><code>posts</code> method</a>.</p>
+				<p>Each post is a dictionary:</p>
+				<pre><samp>[{u'extended': u'For when I get back home',
+		u'hash': u'5fe05afcfc229db0d6cbcb1cbdda71cf',
+		u'description': u'Bonjour for Windows',
+		u'tags': [u'apple', u'windows'],
+		u'time_parsed': (2005, 5, 8, 18, 16, 1, 6, 128, -1),
+		u'href': u'http://www.apple.com/',
+		u'time': u'2005-05-08T18:16:01Z'}]</samp></pre>
+				<p>The anatomy of the above dictionary is as follows:</p>
+				<dl>
+					<dt><var>extended</var></dt>
+					<dd>The extended description of your post.</dd>
+					<dt><var>hash</var></dt>
+					<dd>A unique hash representing the URL used internally by Pinboard.</dd>
+					<dt><var>description</var></dt>
+					<dd>The brief description or title of your post.</dd>
+					<dt><var>tags</var></dt>
+					<dd>A list of each tag relating to the post.</dd>
+					<dt><var>time_parsed</var></dt>
+					<dd>The time this post was made as a Python time tuple of nine integers.</dd>
+					<dt><var>href</var></dt>
+					<dd>The actual URL of the post.</dd>
+					<dt><var>time</var></dt>
+					<dd>The time this post was made as the exact string returned by the Pinboard servers.</dd>
+				</dl>
+			</div>
+			-->
+			<div id="tags">
+				<h4>Tags</h4>
+				<pre><code>p["tags"]</code></pre>
+				<p>A list of every tag in your Pinboard account. Each element is a dictionary:</p>
+				<pre><samp>{u'count': 1, u'name': u'aggregation'}</samp></pre>
+				<p>An anatomy of the above dictionary is as follows:</p>
+				<dl>
+					<dt><var>count</var></dt>
+					<dd>The number of posts associated with this tag.</dd>
+					<dt><var>name</var></dt>
+					<dd>The name of this tag.</dd>
+				</dl>
+			</div>
+		</div>
+		<div id="methods">
+			<h3>Methods</h3>
+			<p>As well as being a dictionary, the <a href="#pinboardaccount">PinboardAccount</a> object supports several methods primarily for more refined query-based retrieval of posts and dates and the manipulation of content on the server (such as adding, editing and deleting posts).</p>
+			<div id="bundlesmethod">
+				<h4>Bundles</h4>
+				<pre><code>p.bundles()</code></pre>
+				<p><em>Use the <a href="#bundles">attribute</a> instead</em>.</p>
+			</div>
+			<div id="datesmethod">
+				<h4>Dates</h4>
+				<pre><code>p.dates(<var>tag</var>=<kbd>"computing"</kbd>)</code></pre>
+				<p>Has a single argument, a string <var>tag</var>, which will refine results so that only dates on which a post associated with the specified tag was made are returned.</p>
+			</div>
+			<div id="postsmethod">
+				<h4>Posts</h4>
+				<pre><code>p.posts(<var>tag</var>=<kbd>"computing"</kbd>, <var>date</var>=<kbd>"2005-05-07"</kbd>, <var>count</var>=<kbd>5</kbd>)</code></pre>
+				<p>This is the most flexible method in the module and allows you to refine which posts you would like to retrieve from Pinboard. The arguments are as follows:</p>
+				<dl>
+					<dt><var>tag</var></dt>
+					<dd>A string specifying with which tag posts should be associated.</dd>
+					<dt><var>date</var></dt>
+					<dd>A string, <a href="http://docs.python.org/tutorial/datastructures.html#tuples-and-sequences">tuple</a>, <a href="http://docs.python.org/lib/datetime-date.html">date</a> or <a href="http://docs.python.org/lib/datetime-datetime.html">datetime</a> specifying on which date the posts should have been made.</dd>
+					<dt><var>count</var></dt>
+					<dd>The number of posts to return.</dd>
+				</dl>
+				<p>If no arguments are specified, this method will return <em>all</em> posts from Pinboard: <strong>this is highly discouraged</strong> as it places a large load on the Pinboard servers. However, the module will prevent you from repeatedly downloading all posts unnecessarily as it internally will check if any changes have been made and, if not, not make a new request.</p>
+			</div>
+			<div id="tagsmethod">
+				<h4>Tags</h4>
+				<pre><code>p.tags()</code></pre>
+				<p><em>Use the <a href="#tags">attribute</a> instead</em>.</p>
+			</div>
+			<div id="add">
+				<h4>Add (and Edit) Posts</h4>
+				<pre><code>p.add(<var>url</var>=<kbd>"http://example.org/"</kbd>, 
+		<var>description</var>=<kbd>"Example"</kbd>,
+		<var>extended</var>=<kbd>"An example site"</kbd>,
+		<var>tags</var>=<kbd>('computing', 'examples')</kbd>,
+		<var>date</var>=<kbd>(2010, 12, 22)</kbd>)</code></pre>
+				<p>This method will add new posts to Pinboard. Its arguments are as follows:</p>
+				<dl>
+					<dt><var>url</var></dt>
+					<dd><strong>Required.</strong> The URL of the page you are bookmarking.</dd>
+					<dt><var>description</var></dt>
+					<dd><strong>Required.</strong> A brief description for the post.</dd>
+					<dt><var>tags</var></dt>
+					<dd>A string, tuple or list of tags to associate this post with.</dd>
+					<dt><var>date</var></dt>
+					<dd>A string, tuple, list, date or datetime on which this post should be registered as made.</dd>
+				</dl>
+			</div>
+			<div id="bundle">
+				<h4>Bundle Tags</h4>
+				<pre><code>p.bundle(<var>bundle</var>=<kbd>"writing"</kbd>,
+	<var>tags</var>=<kbd>("blogging", "journalism")</kbd>)</code></pre>
+				<p>This method creates a new bundle from some existing tags. Its arguments are as follows:</p>
+				<dl>
+					<dt><var>bundle</var></dt>
+					<dd><strong>Required.</strong> The name of the bundle you are creating.</dd>
+					<dt><var>tags</var></dt>
+					<dd><strong>Required.</strong> A list or tuple of the tag names (as strings) that you wish to put inside this bundle.</dd>
+				</dl>
+			</div>
+			<div id="delete">
+				<h4>Delete Posts</h4>
+				<pre><code>p.delete(<var>url</var>=<kbd>"http://example.org/"</kbd>)</code></pre>
+				<p>Delete the post identified by the given URL, <var>url</var>.</p>
+			</div>
+			<div id="deletebundles">
+				<h4>Delete Bundles</h4>
+				<pre><code>p.delete_bundle(<var>name</var>=<kbd>"writing"</kbd>)</code></pre>
+				<p>Delete the bundle identified by the given name, <var>name</var>.</p>
+			</div>
+			<div id="rename">
+				<h4>Rename Tags</h4>
+				<pre><code>p.rename(<var>old</var>=<kbd>"blogging"</kbd>, <var>new</var>=<kbd>"weblogging"</kbd>)</code></pre>
+				<p>Rename the tag <var>old</var> to <var>new</var>.</p>
+			</div>
+			
+			<!-- <div id="license">
+				<h3>GNU Free Documentation License</h3>
+				<p>Version 1.2, November 2002</p>
+				<blockquote><p>
+	Copyright (C) 2000,2001,2002  Free Software Foundation, Inc. 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.</p></blockquote>
+				<div id="preamble">
+					<p><strong>0. PREAMBLE</strong></p>
+					<p>The purpose of this License is to make a manual, textbook, or other functional and useful document "free" in the sense of freedom: to assure everyone the effective freedom to copy and redistribute it, with or without modifying it, either commercially or noncommercially. Secondarily, this License preserves for the author and publisher a way to get credit for their work, while not being considered responsible for modifications made by others.</p>
+					<p>This License is a kind of "copyleft", which means that derivative works of the document must themselves be free in the same sense. It complements the GNU General Public License, which is a copyleft license designed for free software.</p>
+					<p>We have designed this License in order to use it for manuals for free software, because free software needs free documentation: a free program should come with manuals providing the same freedoms that the software does. But this License is not limited to software manuals; it can be used for any textual work, regardless of subject matter or whether it is published as a printed book. We recommend this License principally for works whose purpose is instruction or reference.</p>
+				</div>
+				<div id="applicability">
+					<p><strong>1. APPLICABILITY AND DEFINITIONS</strong></p>
+					<p>This License applies to any manual or other work, in any medium, that contains a notice placed by the copyright holder saying it can be distributed under the terms of this License. Such a notice grants a world-wide, royalty-free license, unlimited in duration, to use that work under the conditions stated herein. The "Document", below, refers to any such manual or work. Any member of the public is a licensee, and is addressed as "you". You accept the license if you copy, modify or distribute the work in a way requiring permission under copyright law.</p>
+					<p>A "Modified Version" of the Document means any work containing the Document or a portion of it, either copied verbatim, or with modifications and/or translated into another language.</p>
+					<p>A "Secondary Section" is a named appendix or a front-matter section of the Document that deals exclusively with the relationship of the publishers or authors of the Document to the Document's overall subject (or to related matters) and contains nothing that could fall directly within that overall subject. (Thus, if the Document is in part a textbook of mathematics, a Secondary Section may not explain any mathematics.) The relationship could be a matter of historical connection with the subject or with related matters, or of legal, commercial, philosophical, ethical or political position regarding them.</p>
+					<p>The "Invariant Sections" are certain Secondary Sections whose titles are designated, as being those of Invariant Sections, in the notice that says that the Document is released under this License. If a section does not fit the above definition of Secondary then it is not allowed to be designated as Invariant. The Document may contain zero Invariant Sections. If the Document does not identify any Invariant Sections then there are none.</p>
+					<p>The "Cover Texts" are certain short passages of text that are listed, as Front-Cover Texts or Back-Cover Texts, in the notice that says that the Document is released under this License. A Front-Cover Text may be at most 5 words, and a Back-Cover Text may be at most 25 words.</p>
+					<p>A "Transparent" copy of the Document means a machine-readable copy, represented in a format whose specification is available to the general public, that is suitable for revising the document straightforwardly with generic text editors or (for images composed of pixels) generic paint programs or (for drawings) some widely available drawing editor, and that is suitable for input to text formatters or for automatic translation to a variety of formats suitable for input to text formatters. A copy made in an otherwise Transparent file format whose markup, or absence of markup, has been arranged to thwart or discourage subsequent modification by readers is not Transparent. An image format is not Transparent if used for any substantial amount of text. A copy that is not "Transparent" is called "Opaque".</p>
+					<p>Examples of suitable formats for Transparent copies include plain ASCII without markup, Texinfo input format, LaTeX input format, SGML or XML using a publicly available DTD, and standard-conforming simple HTML, PostScript or PDF designed for human modification. Examples of transparent image formats include PNG, XCF and JPG. Opaque formats include proprietary formats that can be read and edited only by proprietary word processors, SGML or XML for which the DTD and/or processing tools are not generally available, and the machine-generated HTML, PostScript or PDF produced by some word processors for output purposes only.</p>
+					<p>The "Title Page" means, for a printed book, the title page itself, plus such following pages as are needed to hold, legibly, the material this License requires to appear in the title page. For works in formats which do not have any title page as such, "Title Page" means the text near the most prominent appearance of the work's title, preceding the beginning of the body of the text.</p>
+					<p>A section "Entitled XYZ" means a named subunit of the Document whose title either is precisely XYZ or contains XYZ in parentheses following text that translates XYZ in another language. (Here XYZ stands for a specific section name mentioned below, such as "Acknowledgements", "Dedications", "Endorsements", or "History".) To "Preserve the Title" of such a section when you modify the Document means that it remains a section "Entitled XYZ" according to this definition.</p>
+					<p>The Document may include Warranty Disclaimers next to the notice which states that this License applies to the Document. These Warranty Disclaimers are considered to be included by reference in this License, but only as regards disclaiming warranties: any other implication that these Warranty Disclaimers may have is void and has no effect on the meaning of this License.</p>
+				</div>
+				<div id="verbatim">
+					<p><strong>2. VERBATIM COPYING</strong></p>
+					<p>You may copy and distribute the Document in any medium, either commercially or noncommercially, provided that this License, the copyright notices, and the license notice saying this License applies to the Document are reproduced in all copies, and that you add no other conditions whatsoever to those of this License. You may not use technical measures to obstruct or control the reading or further copying of the copies you make or distribute. However, you may accept compensation in exchange for copies. If you distribute a large enough number of copies you must also follow the conditions in section 3.</p>
+					<p>You may also lend copies, under the same conditions stated above, and you may publicly display copies.</p>
+				</div>
+				<div id="copying">
+					<p><strong>3. COPYING IN QUANTITY</strong></p>
+					<p>If you publish printed copies (or copies in media that commonly have printed covers) of the Document, numbering more than 100, and the Document's license notice requires Cover Texts, you must enclose the copies in covers that carry, clearly and legibly, all these Cover Texts: Front-Cover Texts on the front cover, and Back-Cover Texts on the back cover. Both covers must also clearly and legibly identify you as the publisher of these copies. The front cover must present the full title with all words of the title equally prominent and visible. You may add other material on the covers in addition. Copying with changes limited to the covers, as long as they preserve the title of the Document and satisfy these conditions, can be treated as verbatim copying in other respects.</p>
+					<p>If the required texts for either cover are too voluminous to fit legibly, you should put the first ones listed (as many as fit reasonably) on the actual cover, and continue the rest onto adjacent pages.</p>
+					<p>If you publish or distribute Opaque copies of the Document numbering more than 100, you must either include a machine-readable Transparent copy along with each Opaque copy, or state in or with each Opaque copy a computer-network location from which the general network-using public has access to download using public-standard network protocols a complete Transparent copy of the Document, free of added material. If you use the latter option, you must take reasonably prudent steps, when you begin distribution of Opaque copies in quantity, to ensure that this Transparent copy will remain thus accessible at the stated location until at least one year after the last time you distribute an Opaque copy (directly or through your agents or retailers) of that edition to the public.</p>
+					<p>It is requested, but not required, that you contact the authors of the Document well before redistributing any large number of copies, to give them a chance to provide you with an updated version of the Document.</p>
+				</div>
+				<div id="modifications">
+					<p><strong>4. MODIFICATIONS</strong></p>
+					<p>You may copy and distribute a Modified Version of the Document under the conditions of sections 2 and 3 above, provided that you release the Modified Version under precisely this License, with the Modified Version filling the role of the Document, thus licensing distribution and modification of the Modified Version to whoever possesses a copy of it. In addition, you must do these things in the Modified Version:</p>
+					<ul>
+						<li><strong>A.</strong> Use in the Title Page (and on the covers, if any) a title distinct from that of the Document, and from those of previous versions (which should, if there were any, be listed in the History section of the Document). You may use the same title as a previous version if the original publisher of that version gives permission.</li>
+						<li><strong>B.</strong> List on the Title Page, as authors, one or more persons or entities responsible for authorship of the modifications in the Modified Version, together with at least five of the principal authors of the Document (all of its principal authors, if it has fewer than five), unless they release you from this requirement.</li>
+						<li><strong>C.</strong> State on the Title page the name of the publisher of the Modified Version, as the publisher.</li>
+						<li><strong>D.</strong> Preserve all the copyright notices of the Document.</li>
+						<li><strong>E.</strong> Add an appropriate copyright notice for your modifications adjacent to the other copyright notices.</li>
+						<li><strong>F.</strong> Include, immediately after the copyright notices, a license notice giving the public permission to use the Modified Version under the terms of this License, in the form shown in the Addendum below.</li>
+						<li><strong>G.</strong> Preserve in that license notice the full lists of Invariant Sections and required Cover Texts given in the Document's license notice.</li>
+						<li><strong>H.</strong> Include an unaltered copy of this License.</li>
+						<li><strong>I.</strong> Preserve the section Entitled "History", Preserve its Title, and add to it an item stating at least the title, year, new authors, and publisher of the Modified Version as given on the Title Page. If there is no section Entitled "History" in the Document, create one stating the title, year, authors, and publisher of the Document as given on its Title Page, then add an item describing the Modified Version as stated in the previous sentence.</li>
+						<li><strong>J.</strong> Preserve the network location, if any, given in the Document for public access to a Transparent copy of the Document, and likewise the network locations given in the Document for previous versions it was based on. These may be placed in the "History" section. You may omit a network location for a work that was published at least four years before the Document itself, or if the original publisher of the version it refers to gives permission.</li>
+						<li><strong>K.</strong> For any section Entitled "Acknowledgements" or "Dedications", Preserve the Title of the section, and preserve in the section all the substance and tone of each of the contributor acknowledgements and/or dedications given therein.</li>
+						<li><strong>L.</strong> Preserve all the Invariant Sections of the Document, unaltered in their text and in their titles. Section numbers or the equivalent are not considered part of the section titles.</li>
+						<li><strong>M.</strong> Delete any section Entitled "Endorsements". Such a section may not be included in the Modified Version.</li>
+						<li><strong>N.</strong> Do not retitle any existing section to be Entitled "Endorsements" or to conflict in title with any Invariant Section.</li>
+						<li><strong>O.</strong> Preserve any Warranty Disclaimers.</li>
+					</ul>
+					<p>If the Modified Version includes new front-matter sections or appendices that qualify as Secondary Sections and contain no material copied from the Document, you may at your option designate some or all of these sections as invariant. To do this, add their titles to the list of Invariant Sections in the Modified Version's license notice. These titles must be distinct from any other section titles.</p>
+					<p>You may add a section Entitled "Endorsements", provided it contains nothing but endorsements of your Modified Version by various parties--for example, statements of peer review or that the text has been approved by an organization as the authoritative definition of a standard.</p>
+					<p>You may add a passage of up to five words as a Front-Cover Text, and a passage of up to 25 words as a Back-Cover Text, to the end of the list of Cover Texts in the Modified Version. Only one passage of Front-Cover Text and one of Back-Cover Text may be added by (or through arrangements made by) any one entity. If the Document already includes a cover text for the same cover, previously added by you or by arrangement made by the same entity you are acting on behalf of, you may not add another; but you may replace the old one, on explicit permission from the previous publisher that added the old one.</p>
+					<p>The author(s) and publisher(s) of the Document do not by this License give permission to use their names for publicity for or to assert or imply endorsement of any Modified Version.</p>
+				</div>
+				<div id="combining">
+					<p><strong>5. COMBINING DOCUMENTS</strong></p>
+					<p>You may combine the Document with other documents released under this License, under the terms defined in section 4 above for modified versions, provided that you include in the combination all of the Invariant Sections of all of the original documents, unmodified, and list them all as Invariant Sections of your combined work in its license notice, and that you preserve all their Warranty Disclaimers.</p>
+					<p>The combined work need only contain one copy of this License, and multiple identical Invariant Sections may be replaced with a single copy. If there are multiple Invariant Sections with the same name but different contents, make the title of each such section unique by adding at the end of it, in parentheses, the name of the original author or publisher of that section if known, or else a unique number. Make the same adjustment to the section titles in the list of Invariant Sections in the license notice of the combined work.</p>
+					<p>In the combination, you must combine any sections Entitled "History" in the various original documents, forming one section Entitled "History"; likewise combine any sections Entitled "Acknowledgements", and any sections Entitled "Dedications". You must delete all sections Entitled "Endorsements."</p>
+				</div>
+				<div id="collections">
+					<p><strong>6. COLLECTIONS OF DOCUMENTS</strong></p>
+					<p>You may make a collection consisting of the Document and other documents released under this License, and replace the individual copies of this License in the various documents with a single copy that is included in the collection, provided that you follow the rules of this License for verbatim copying of each of the documents in all other respects.</p>
+					<p>You may extract a single document from such a collection, and distribute it individually under this License, provided you insert a copy of this License into the extracted document, and follow this License in all other respects regarding verbatim copying of that document.</p>
+				</div>
+				<div id="aggregation">
+					<p><strong>7. AGGREGATION WITH INDEPENDENT WORKS</strong></p>
+					<p>A compilation of the Document or its derivatives with other separate and independent documents or works, in or on a volume of a storage or distribution medium, is called an "aggregate" if the copyright resulting from the compilation is not used to limit the legal rights of the compilation's users beyond what the individual works permit. When the Document is included in an aggregate, this License does not apply to the other works in the aggregate which are not themselves derivative works of the Document.</p>
+					<p>If the Cover Text requirement of section 3 is applicable to these copies of the Document, then if the Document is less than one half of the entire aggregate, the Document's Cover Texts may be placed on covers that bracket the Document within the aggregate, or the electronic equivalent of covers if the Document is in electronic form. Otherwise they must appear on printed covers that bracket the whole aggregate.</p>
+				</div>
+				<div id="translation">
+					<p><strong>8. TRANSLATION</strong></p>
+					<p>Translation is considered a kind of modification, so you may distribute translations of the Document under the terms of section 4. Replacing Invariant Sections with translations requires special permission from their copyright holders, but you may include translations of some or all Invariant Sections in addition to the original versions of these Invariant Sections. You may include a translation of this License, and all the license notices in the Document, and any Warranty Disclaimers, provided that you also include the original English version of this License and the original versions of those notices and disclaimers. In case of a disagreement between the translation and the original version of this License or a notice or disclaimer, the original version will prevail.</p>
+					<p>If a section in the Document is Entitled "Acknowledgements", "Dedications", or "History", the requirement (section 4) to Preserve its Title (section 1) will typically require changing the actual title.</p>
+				</div>
+				<div id="termination">
+					<p><strong>9. TERMINATION</strong></p>
+					<p>You may not copy, modify, sublicense, or distribute the Document except as expressly provided for under this License. Any other attempt to copy, modify, sublicense or distribute the Document is void, and will automatically terminate your rights under this License. However, parties who have received copies, or rights, from you under this License will not have their licenses terminated so long as such parties remain in full compliance.</p>
+				</div>
+				<div id="future">
+					<p><strong>10. FUTURE REVISIONS OF THIS LICENSE</strong></p>
+					<p>The Free Software Foundation may publish new, revised versions of the GNU Free Documentation License from time to time. Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns. See http://www.gnu.org/copyleft/.</p>
+					<p>Each version of the License is given a distinguishing version number. If the Document specifies that a particular numbered version of this License "or any later version" applies to it, you have the option of following the terms and conditions either of that specified version or of any later version that has been published (not as a draft) by the Free Software Foundation. If the Document does not specify a version number of this License, you may choose any version ever published (not as a draft) by the Free Software Foundation.</p>
+				</div>
+				<div id="how">
+					<h3>How to use this License for your documents</h3>
+					<p>To use this License in a document you have written, include a copy of the License in the document and put the following copyright and license notices just after the title page:</p>
+					<blockquote><p>Copyright (c)  YEAR  YOUR NAME.</p>
+				<p>Permission is granted to copy, distribute and/or modify this document
+				under the terms of the GNU Free Documentation License, Version 1.2
+				or any later version published by the Free Software Foundation;
+				with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+				Texts.  A copy of the license is included in the section entitled "GNU
+				Free Documentation License".</p></blockquote>
+					<p>If you have Invariant Sections, Front-Cover Texts and Back-Cover Texts, replace the "with...Texts." line with this:</p>
+					<blockquote><p>with the Invariant Sections being LIST THEIR TITLES, with the
+				Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.</p></blockquote>
+					<p>If you have Invariant Sections without Cover Texts, or some other combination of the three, merge those two alternatives to suit the situation.</p>
+					<p>If your document contains nontrivial examples of program code, we recommend releasing these examples in parallel under your choice of free software license, such as the GNU General Public License, to permit their use in free software.</p>
+				</div>
+				
+			</div> -->
+		</div>
+	</div>
+</body>
+</html>
