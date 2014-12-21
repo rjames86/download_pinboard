@@ -12,11 +12,11 @@ from lib import (
     PinboardPrefs
 )
 
-HOME = os.path.expanduser('~')
-BASEPATH = HOME + '/Dropbox/Sync/Bookmarks/'
-
 # Token can be found at https://pinboard.in/settings/password
-_PINBOARD_TOKEN = 'Your token here'
+from settings import (
+    _PINBOARD_TOKEN,
+    _SAVE_PATH,
+)
 
 
 def to_dt(thing):
@@ -73,7 +73,7 @@ class PinboardDownloader:
         self.set_last_updated()
 
     def _clean_filename(self, description):
-        return BASEPATH + re.sub(r'[/]', ' ', description) + '.webloc'
+        return _SAVE_PATH + re.sub(r'[/]', ' ', description) + '.webloc'
 
 if __name__ == '__main__':
     p = PinboardDownloader(token=_PINBOARD_TOKEN)

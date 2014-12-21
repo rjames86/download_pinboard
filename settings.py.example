@@ -1,0 +1,6 @@
+import os
+
+HOME = os.path.expanduser('~')
+
+_PINBOARD_TOKEN = None
+_SAVE_PATH = HOME + '/Dropbox/Bookmarks/'
