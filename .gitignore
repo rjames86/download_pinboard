@@ -7,6 +7,7 @@ __pycache__/
 
 *~
 settings.py
+pinboarddownloader.log
 
 # Distribution / packaging
 .Python
