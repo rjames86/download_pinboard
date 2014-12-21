@@ -1,3 +1,4 @@
 from pinboard import pinboard
 from tags import Tags
-from preferences import PinboardPrefs
+from utils import *
+from download_pinboard import PinboardDownloader
