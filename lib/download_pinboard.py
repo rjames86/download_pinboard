@@ -28,6 +28,8 @@ class PinboardDownloader:
         self.prefs = PinboardPrefs()
         self.pinboard_last_updated = to_dt(self.p.last_update())
         self.last_updated = self.get_last_updated()
+        self.urls_already_seen = set()
+        self.duplicate_count = 0
 
     @property
     def needs_update(self):
@@ -73,6 +75,9 @@ class PinboardDownloader:
         posts_to_download = self.get_posts(**kwargs)
         self.logger.info("got %s posts..." % len(posts_to_download))
         for post in posts_to_download:
+            if post['description'] in self.urls_already_seen:
+                self.duplicate_count += 1
+                continue
             filename = self._clean_filename(post['description'])
             data = {
                 'URL':  post['href']
@@ -82,6 +87,14 @@ class PinboardDownloader:
                 data
             )
             Tags.set_tags(filename, post['tags'])
+            self.urls_already_seen.add(post['description'])
+
+        if self.duplicate_count:
+            self.logger.info(
+                "%s duplicates found. %s bookmarks saved"
+                % (self.duplicate_count, len(self.urls_already_seen))
+            )
+
         self.set_last_updated()
 
     def _clean_filename(self, description):
