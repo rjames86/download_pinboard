@@ -67,7 +67,7 @@ class PinboardDownloader:
             f.write(plistlib.writePlistToString(data))
 
     def download_posts(self, **kwargs):
-        if not self.needs_update and not kwargs.get('skip_update'):
+        if not self.needs_update:
             self.logger.info("Pinboard download is up-to-date. Exiting...")
             sys.exit(1)
         posts_to_download = self.get_posts(**kwargs)

@@ -14,7 +14,7 @@ if __name__ == '__main__':
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--reset', dest='reset', const=999, nargs='?', default=None, help='Reset Pinboard. Add a value to reset back X number of days')
     parser.add_argument('-t', action='append', dest='tags', help="Download based on specific filter. Maximum 3")
-    parser.add_argument('--skip-update', action='store_true', dest='skip_update', help="Ignores the last updated time")
+    parser.add_argument('--skip-update', action='store_true', dest='skip_update', default=False, help="Ignores the last updated time")
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default = False, help="Verbose")
 
     args = parser.parse_args()
@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     extra_params = dict()
     if args.skip_update:
-        extra_params['skip_update'] = args.skip_update
+        p.set_last_updated(reset=999)
     if args.reset:
         reset = args.reset
         if isinstance(reset, basestring):
