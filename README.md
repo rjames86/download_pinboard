@@ -26,7 +26,7 @@ To start the script, you can simply do
 ### Optional arguments
 
 `-v, --verbose` Shows output as stdout  
-`--reset [optional num of days]` Resets your last updated time. If you don't specifiy a number, it will reset to 999 days.  
+`--reset [optional num of days]` Resets your last updated time. If you don't specifiy a number, it will reset to 10000 days.  
 `-t` Filters the bookmarks you want to download by tag. You can pass multiple -t tags, but no more than 3. Multiple tags are AND not OR  
 `--skip-update` Lets you bypass the last downloaded time. Nice for redownloading everything.  
 
