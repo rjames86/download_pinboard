@@ -23,8 +23,8 @@ def to_dt(thing):
 
 class PinboardDownloader:
     def __init__(self, username=None, password=None, token=None, **kwargs):
-        self.p = pinboard.open(username, password, token)
         self.logger = configure_log(logging.INFO, 'pinboarddownloader', verbose=kwargs.get('verbose'))
+        self.p = self._get_pinboard_session(username, password, token)
         self.prefs = PinboardPrefs()
         self.pinboard_last_updated = to_dt(self.p.last_update())
         self.last_updated = self.get_last_updated()
@@ -42,7 +42,7 @@ class PinboardDownloader:
         self.logger.info("Last updated locally: %s " % to_ret)
         return to_ret
 
-    def set_last_updated(self, reset=0):
+    def set_last_updated(self, reset=None):
         if reset:
             timestamp = self.last_updated - timedelta(days=reset)
         else:
@@ -56,7 +56,6 @@ class PinboardDownloader:
         if kwargs.get('tag'):
             to_pass['tag'] = kwargs['tag']
             self.logger.info("Filtering posts by tags: %s" % kwargs['tag'])
-            self.set_last_updated(reset=True)
         self.logger.info("Getting posts...")
         return self.p.posts(
             fromdt=self.last_updated,
@@ -99,3 +98,12 @@ class PinboardDownloader:
 
     def _clean_filename(self, description):
         return _SAVE_PATH + re.sub(r'[/]', ' ', description) + '.webloc'
+
+    def _get_pinboard_session(self, username, password, token):
+        # todo: should maybe try attempting to connect a few times
+        # before just giving up
+        try:
+            return pinboard.open(username, password, token)
+        except Exception as e:
+            self.logger.error("Error connecting with Pinboard API: %s" % e)
+            sys.exit(0)
