@@ -1,7 +1,7 @@
 download_pinboard
 =================
 
-Download your pinboard bookmarks as webloc files with Mac OS X tags. By default, the script will only download new bookmarks.
+Download your Pinboard bookmarks as webloc files with Mac OS X tags.
 
 ## Setup
 
@@ -22,6 +22,8 @@ In settings.py set your Pinboard token and the path where you want your bookmark
 To start the script, you can simply do
 
     python main.py
+
+By default, the script will only download new bookmarks from the last time the script was run.
 
 ### Optional arguments
 
