@@ -99,7 +99,7 @@ class PinboardDownloader:
     def _clean_filename(self, description):
         cleaned_filename = re.sub(r'[/]', ' ', description)
         if(len(cleaned_filename) > (248)):
-            cleaned_filename = cleaned_filename[0:248]
+            cleaned_filename = cleaned_filename[0:248].strip()
         return _SAVE_PATH + cleaned_filename + '.webloc'
 
     def _get_pinboard_session(self, username, password, token):
