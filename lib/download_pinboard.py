@@ -97,7 +97,12 @@ class PinboardDownloader:
         self.set_last_updated()
 
     def _clean_filename(self, description):
-        return _SAVE_PATH + re.sub(r'[/]', ' ', description) + '.webloc'
+        # some filesystems HFS+) don't like very long filenames (255+ chars)
+        # stripping at 248 characters + .webloc prevents issues on those systems
+        cleaned_filename = re.sub(r'[/]', ' ', description)
+        if(len(cleaned_filename) > (248)):
+            cleaned_filename = cleaned_filename[0:248].strip()
+        return _SAVE_PATH + cleaned_filename + '.webloc'
 
     def _get_pinboard_session(self, username, password, token):
         # todo: should maybe try attempting to connect a few times
