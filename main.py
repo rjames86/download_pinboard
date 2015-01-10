@@ -8,6 +8,12 @@ except ImportError:
 from lib import PinboardDownloader
 import argparse
 
+
+__author__ = "Ryan M"
+__email__ = "rjames86@gmail.com"
+__date__ = "2015-01-10"
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="Pinboard downloader",
