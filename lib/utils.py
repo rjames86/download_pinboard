@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from Foundation import (
     CFPreferencesAppSynchronize,
     CFPreferencesCopyAppValue,
@@ -9,7 +11,7 @@ from Foundation import (
 )
 
 import logging
-
+from subprocess import Popen, PIPE
 
 def configure_log(level=None, name=None, verbose=False):
     logger = logging.getLogger(name)
@@ -84,3 +86,22 @@ class PinboardPrefs(Preferences):
     def __init__(self):
         self.bundle_id = 'com.ryanmo.downloadpinboard'
         self.user = kCFPreferencesCurrentUser
+
+class AppleScript:
+
+    COMMENT_COMMAND = \
+    u"""set theFile to POSIX file "{filename}"
+    tell application "Finder"
+        set comment of file theFile to "{comment}"
+    end tell
+    """
+
+    @classmethod
+    def set_comments(cls, filename, comment):
+        p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        stdout, stderr = p.communicate(
+            cls.COMMENT_COMMAND.format(
+                filename=filename,
+                comment=comment
+            ).encode('utf8')
+        )

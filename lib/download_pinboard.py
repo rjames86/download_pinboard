@@ -8,10 +8,11 @@ import logging
 
 
 from lib import (
+    AppleScript,
+    configure_log,
     pinboard,
     Tags,
-    PinboardPrefs,
-    configure_log
+    PinboardPrefs
 )
 
 from settings import _SAVE_PATH
@@ -78,14 +79,16 @@ class PinboardDownloader:
                 self.duplicate_count += 1
                 continue
             filename = self._clean_filename(post['description'])
-            data = {
-                'URL':  post['href']
-            }
+            data = {'URL':  post['href']}
             self.write_to_file(
                 filename,
                 data
             )
             Tags.set_tags(filename, post['tags'])
+            AppleScript.set_comments(
+                filename,
+                u"%s\n\n%s" % (post['href'], post['description'])
+            )
             self.urls_already_seen.add(post['description'])
 
         if self.duplicate_count:
