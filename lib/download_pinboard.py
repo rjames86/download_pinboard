@@ -100,7 +100,7 @@ class PinboardDownloader:
         # some filesystems HFS+) don't like very long filenames (255+ chars)
         # stripping at 248 characters + .webloc prevents issues on those systems
         cleaned_filename = re.sub(r'[/]', ' ', description)
-        if(len(cleaned_filename) > (248)):
+        if len(cleaned_filename) > 248:
             cleaned_filename = cleaned_filename[0:248].strip()
         return _SAVE_PATH + cleaned_filename + '.webloc'
 
