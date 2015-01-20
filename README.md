@@ -34,6 +34,10 @@ By default, the script will only download new bookmarks from the last time the s
 
 ## Notes
 
+**2015-01-19**
+
+- Added Spotlight comments with the URL and full description
+
 **2014-12-23**  
 - I don't have a lot of bookmarks (~150) and so I don't know what Pinboard will do if you request a ton of bookmarks for the initial download. If you have a lot of bookmarks and hit any weird errors, please let me know. 
 
