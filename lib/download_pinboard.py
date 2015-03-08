@@ -24,7 +24,7 @@ def to_dt(thing):
 
 class PinboardDownloader:
     def __init__(self, username=None, password=None, token=None, **kwargs):
-        self.logger = configure_log(logging.INFO, 'pinboarddownloader', verbose=kwargs.get('verbose'))
+        self.logger = configure_log('pinboarddownloader', verbose=kwargs.get('verbose'))
         self.p = self._get_pinboard_session(username, password, token)
         self.prefs = PinboardPrefs()
         self.pinboard_last_updated = to_dt(self.p.last_update())

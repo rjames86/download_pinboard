@@ -13,19 +13,22 @@ from Foundation import (
 import logging
 from subprocess import Popen, PIPE
 
-def configure_log(level=None, name=None, verbose=False):
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
+LOGGER_LEVEL = logging.INFO
 
+
+def configure_log(name=None, verbose=False):
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
     file_handler = logging.FileHandler('%s.log' % name, 'a+', 'utf-8')
-    file_handler.setLevel(logging.DEBUG)
-    file_format = logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d in %(funcName)s]')
+    file_handler.setLevel(LOGGER_LEVEL)
+    file_format = logging.Formatter(
+        '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d in %(funcName)s]')
     file_handler.setFormatter(file_format)
     logger.addHandler(file_handler)
 
     if verbose:
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.INFO)
+        console_handler.setLevel(logging.DEBUG)
         console_format = logging.Formatter('%(levelname)s: %(message)s')
         console_handler.setFormatter(console_format)
         logger.addHandler(console_handler)
