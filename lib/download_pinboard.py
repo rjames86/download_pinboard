@@ -4,7 +4,7 @@ import dateutil.parser
 import plistlib
 import sys
 import re
-import logging
+import requests
 
 
 from lib import (
@@ -31,6 +31,11 @@ class PinboardDownloader:
         self.last_updated = self.get_last_updated()
         self.urls_already_seen = set()
         self.duplicate_count = 0
+        self._kwargs = kwargs
+
+    @property
+    def as_markdown(self):
+        return bool(self._kwargs.get('markdown'))
 
     @property
     def needs_update(self):
@@ -66,7 +71,7 @@ class PinboardDownloader:
     def write_to_file(self, filepath, data):
         self.logger.info("Writing to %s" % filepath.split('/')[-1])
         with open(filepath, 'w') as f:
-            f.write(plistlib.writePlistToString(data))
+            f.write(data)
 
     def download_posts(self, **kwargs):
         if not self.needs_update:
@@ -79,7 +84,10 @@ class PinboardDownloader:
                 self.duplicate_count += 1
                 continue
             filename = self._clean_filename(post['description'])
-            data = {'URL':  post['href']}
+            if self.as_markdown:
+                data = self.get_data_as_markdown(post['href'])
+            else:
+                data = plistlib.writePlistToString({'URL':  post['href']})
             self.write_to_file(
                 filename,
                 data
@@ -99,13 +107,19 @@ class PinboardDownloader:
 
         self.set_last_updated()
 
+    def get_data_as_markdown(self, url):
+        markdown_url = "http://heckyesmarkdown.com/go/?read=1&u=%s"
+        self.logger.info("Downloading %s as Markdown..." % url)
+        return requests.get(markdown_url % url).content
+
     def _clean_filename(self, description):
         # some filesystems HFS+) don't like very long filenames (255+ chars)
         # stripping at 248 characters + .webloc prevents issues on those systems
         cleaned_filename = re.sub(r'[/]', ' ', description)
+        extension = '.md' if self.as_markdown else '.webloc'
         if len(cleaned_filename) > 248:
             cleaned_filename = cleaned_filename[0:248].strip()
-        return _SAVE_PATH + cleaned_filename + '.webloc'
+        return _SAVE_PATH + cleaned_filename + extension
 
     def _get_pinboard_session(self, username, password, token):
         # todo: should maybe try attempting to connect a few times

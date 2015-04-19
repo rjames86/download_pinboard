@@ -21,10 +21,13 @@ if __name__ == '__main__':
     parser.add_argument('--reset', dest='reset', const=10000, nargs='?', default=None, help='Reset Pinboard. Add a value to reset back X number of days')
     parser.add_argument('-t', action='append', dest='tags', help="Download based on specific filter. Maximum 3")
     parser.add_argument('--skip-update', action='store_true', dest='skip_update', default=False, help="Ignores the last updated time")
-    parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default = False, help="Verbose")
+    parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False, help="Verbose")
+    parser.add_argument('-m', '--markdown', action='store_true', dest='markdown', default=False, help="Save files as Markdown")
 
     args = parser.parse_args()
-    p = PinboardDownloader(token=_PINBOARD_TOKEN, verbose = args.verbose)
+    p = PinboardDownloader(token=_PINBOARD_TOKEN,
+                           markdown=args.markdown,
+                           verbose=args.verbose)
 
     extra_params = dict()
     if args.skip_update:
