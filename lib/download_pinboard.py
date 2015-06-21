@@ -87,7 +87,7 @@ class PinboardDownloader:
             Tags.set_tags(filename, post['tags'])
             AppleScript.set_comments(
                 filename,
-                u"%s\n\n%s" % (post['href'], post['description'])
+                u"{href}\n\n{description}\n\n{extended}".format(**post)
             )
             self.urls_already_seen.add(post['description'])
 
